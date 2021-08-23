@@ -29,7 +29,7 @@ ll calcHash(string s){
 	return _hash;
 }
 
-int calcMaxPow(){
+ll calcMaxPow(){
 	ll temp = 1;
 	for(int i = 0; i < m-1; i++)
 		temp = (temp*D) % MOD;
@@ -52,7 +52,7 @@ int main(){
 		if(check(0))
 			cout << "0 ";
 	}
-	int mxPow = calcMaxPow();
+	ll mxPow = calcMaxPow();
 	
 	for(int i = m; i < n; i++){
 		//remove last
