@@ -3,10 +3,11 @@
 using namespace std;
 
 struct Node{
-	int val, sz;
+	char val;
+	int sz;
 	Node *par, *c[2];
 	
-	Node(int val) : sz(1), val(val){
+	Node(char val) : val(val), sz(1){
 		c[0] = c[1] = par = nullptr;
 	}
 
@@ -83,8 +84,82 @@ void splay(Node *src){
 	root = src;
 }
 
-//solution to https://pdp-archive.github.io/30-PDP/c-rafting-statement
+void log(Node *src){
+	if(!src)
+		return;
+	log(src->c[0]);
+	if(src->val != '$')
+		cout << src->val;
+	log(src->c[1]);
+}
 
+//solution to https://cses.fi/problemset/task/2072
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	int n, m;
+	cin >> n >> m;
+	string s;
+	cin >> s;
+	Node *root = new Node('$');
+	for(int i = 0; i < n; i++){
+		Node *x = new Node(s[i]);
+		insert(root, i+2, x);
+		splay(x), root = x;
+	}
+
+	while(m--){
+		int l, r;
+		cin >> l >> r;
+		
+		Node *x = find(root, l);
+		splay(x), root = x;
+		Node *y = x->c[1];
+
+		y->par = nullptr;
+		x->c[1] = nullptr;
+		x->upd();
+
+		Node *z = find(y, r-l+1);
+		splay(z);
+		Node *w = z->c[1];
+
+		if(w)
+			w->par = nullptr;
+		z->c[1] = nullptr;
+		z->upd();
+
+		//[x],[z],[w]	
+		/*	
+		for(int i = 0; i < x->sz; i++)
+			cout << find(x, i+1)->val;
+		cout << " ";
+		for(int i = 0; i < z->sz; i++)
+			cout << find(z, i+1)->val;
+		cout << " ";
+		if(w)
+			for(int i = 0; i < w->sz; i++)
+				cout << find(w, i+1)->val;
+		cout << endl;
+		*/
+
+		if(w){
+			insert(root, root->sz+1, w);
+			splay(w), root = w;
+		}
+		insert(root, root->sz+1, z);
+		splay(z), root = z;
+	}
+	log(root);
+	/*
+	for(int i = 2; i <= n+1; i++)
+		cout << find(root, i)->val;
+	cout << "\n";
+	*/
+}
+
+/*
+//solution to https://pdp-archive.github.io/30-PDP/c-rafting-statement
 int main(){
 	//freopen("rafting.in", "r", stdin);
 	//freopen("rafting.out", "w", stdout);
@@ -103,4 +178,5 @@ int main(){
 	for(int i = 1; i <= n; i++)
 		cout << find(root, i)->val << " ";
 }
+*/
 
